@@ -3,6 +3,8 @@ package astar;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.PriorityQueue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,6 +18,8 @@ public class RushHourStateTest {
 	RushHourState rhs4;
 	RushHourState rhs5;
 	RushHourState rhsFinish;
+	
+	RHSearchNode s1, s1_1, s1_2, s2, s3, sFinish;
 	
 	RushHourState[] rhs1_mutations = new RushHourState[3];
 	
@@ -44,6 +48,7 @@ public class RushHourStateTest {
 		rhs3.addPiece(new Piece(0,3,4,2));
 		rhs3.addPiece(new Piece(0,4,1,2));
 		rhs3.addPiece(new Piece(1,2,0,2));
+		// 5 gone
 		
 		this.rhs4 = new RushHourState();
 		rhs4.addPiece(new Piece(0,0,2,3));
@@ -91,6 +96,13 @@ public class RushHourStateTest {
 		rhs1_mutations[2].addPiece(new Piece(0,3,1,2));
 		rhs1_mutations[2].addPiece(new Piece(1,2,0,2));
 		rhs1_mutations[2].addPiece(new Piece(1,4,2,2));
+
+		s1 = new RHSearchNode(rhs1, 0);
+		s1_1 = new RHSearchNode(rhs1, 5);
+		s1_2 = new RHSearchNode(rhs1, 1);
+		s2 = new RHSearchNode(rhs2, 1);
+		s3 = new RHSearchNode(rhs3, 1);
+		sFinish = new RHSearchNode(rhsFinish, 1);
 	}
 
 	@After
@@ -188,6 +200,87 @@ public class RushHourStateTest {
 		assertEquals(rhs1_mutations[1], rhs1.applyMove(2, new PieceMovement(1,0)));
 		assertEquals(rhs1_mutations[2], rhs1.applyMove(3, new PieceMovement(-1,0)));
 	}
+	
+	@Test
+	public void testSerchNodeG() {
+		assertEquals(0, s1.getG());
+		assertEquals(1, s1_2.getG());
+	}
+	
+	@Test
+	public void testSearchNodeH() {
+		assertEquals(3, s1.getH());
+		assertEquals(3, s1_2.getH());
+	}
+	
+	@Test
+	public void testSearchNodeF() {
+		assertEquals(3, s1.getF());
+		assertEquals(4, s1_2.getF());
+	}
+	
+	@Test
+	public void testSearchNodeExpand() throws Exception {
+		ArrayList<RHSearchNode> l;
+		l = s1.getChildren();
+		assertEquals(0, l.size());
+		s1.expand();
+		assertEquals(3, l.size());
+	}
+	
+	@Test(expected = Exception.class)
+	public void testSearchNodeDoubleExpansion() throws Exception {
+		s1.expand();
+		s1.expand();
+	}
+	
+	@Test
+	public void testSearchNodeComparable() {
+		ArrayList<RHSearchNode> l = new ArrayList<RHSearchNode>();
+		l.add(s1_1);
+		l.add(s1_2);
+		l.add(s2);
+		l.add(s3);
+		Collections.sort(l);
+		assertEquals(s3, l.get(0));
+		assertEquals(s1_2, l.get(1));
+		assertEquals(s2, l.get(2));
+		assertEquals(s1_1, l.get(3));
+		
+		
+	}
+	
+	@Test
+	public void testSetParent() {
+		assertNull(s1.getParent());
+		s1.setParent(s2);
+		assertEquals(s2, s1.getParent());
+	}
+	
+	@Test
+	public void testPriorityQueue() throws Exception {
+		PriorityQueue<RHSearchNode> pq = new PriorityQueue<RHSearchNode>();
+		pq.add(s1);
+		RHSearchNode first = pq.poll();
+		assertEquals(s1, first);
+		first.expand();
+		for(RHSearchNode s: first.getChildren()) {
+			pq.add(s);
+		}
+		RHSearchNode second = pq.poll();
+		assertEquals(true, second.getState().equals(rhs1_mutations[1]) || second.getState().equals(rhs1_mutations[2]));
+		RHSearchNode third = pq.poll();
+		assertEquals(true, third.getState().equals(rhs1_mutations[1]) || third.getState().equals(rhs1_mutations[2]));
+		RHSearchNode fourth = pq.poll();
+		assertEquals(rhs1_mutations[0], fourth.getState());
+	}
+	
+	@Test
+	public void testSearchNodeIsGoal() {
+		assertEquals(false, s1.isGoal());
+		assertEquals(true, sFinish.isGoal());
+	}
+	
 	
 
 }
