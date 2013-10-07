@@ -11,6 +11,5 @@ public:
 
 	//Helper functions
 	void backTracePath(std::vector<Node> &results, Node &end);
-	void contains(std::vector<Node> &vec, Node &element);
 };
 

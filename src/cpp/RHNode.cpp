@@ -72,6 +72,18 @@ std::vector<gamestate> getSubsequentStates(gamestate &state)
 	return newStates;
 }
 
+bool equals(gamestate& state1, gamestate& state2)
+{
+	if(state1.vehicles.size() != state2.vehicles.size())
+		return false;
+	for(int i = 0; i < state1.vehicles.size(); i++)
+	{
+		if(state1.vehicles[i].data[1] != state2.vehicles[i].data[1] || state1.vehicles[i].data[2] != state2.vehicles[i].data[2])
+			return false;
+	}
+	return true;
+}
+
 RHNode::RHNode(gamestate state)
 {
 	this->state = state;

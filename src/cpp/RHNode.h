@@ -17,12 +17,16 @@ struct gamestate
 std::vector<gamestate> getSubsequentStates(gamestate &state);
 bool isOccupied(gamestate &state, int x, int y);
 bool occupies(vehicle &vehicle, int x, int y);
+bool equals(gamestate& state1, gamestate& state2);
 
 class RHNode : public Node
 {
 public:
 	RHNode(gamestate state);
 	~RHNode(void);
+
+	//Required for std::find, see AStar.cpp
+	bool operator==(RHNode& node){return equals(this->getState(), node.getState());};
 	
 	void expand();
 	int calculateHeuristic();

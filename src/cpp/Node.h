@@ -15,6 +15,8 @@ public:
 	virtual void calculateValues();
 	virtual bool isSolution();
 
+	virtual bool operator ==(Node& other);
+
 	bool isOpen();
 
 	Node* parent;
