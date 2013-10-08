@@ -51,11 +51,6 @@ int main(int argc, char** argv)
 	printf("\nSuccess!\n");
 	printf("\nSolution found with: \n");
 	printf("%i moves", results.size());
-	printf("Solution:\n");
 
-	for(int i = 0; i < results.size(); ++i)
-	{
-		results.at(i)->printMap();
-	}
 }
 

@@ -32,11 +32,10 @@ void AStar::search(RHNode &start, std::vector<RHNode*> &results)
 		if(current.isSolution())
 		{
 			backTracePath(results, start, current);
-			break;
+			return;
 		}
 
 		current.expand();
-		//current.printMap();
 		for(unsigned int i = 0; i < current.kids.size(); i++)
 		{	
 			current.kids[i].parent = new RHNode();
@@ -67,6 +66,7 @@ void AStar::search(RHNode &start, std::vector<RHNode*> &results)
 	}
 }
 
+// very hacky
 void AStar::backTracePath(std::vector<RHNode*> &results, RHNode& start, RHNode& end)
 {
 	RHNode* cur = &end;
