@@ -32,17 +32,19 @@ public:
 
 	//Required for std::find, see AStar.cpp
 	bool operator==(const RHNode& node)const{return equals(getState(), node.getState());};
-	
+	bool operator<(const RHNode& node)const{return this->f < node.f;};
+
 	void expand();
 	int calculateHeuristic();
 	void calculateValues();
 	bool isSolution();
 	gamestate getState() const;
 
-	float f, g, h;
+	float f, g;
 	
 
 	void printState();
+	void printMap();
 	RHNode* parent;
 	std::vector<RHNode> kids;
 

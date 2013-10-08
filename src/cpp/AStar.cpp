@@ -1,5 +1,6 @@
 #include "AStar.h"
 #include <deque>
+#include <algorithm>
 
 
 AStar::AStar(void)
@@ -25,15 +26,13 @@ void AStar::search(RHNode &start, std::vector<RHNode> &results)
 	openSet.push_back(start);
 	RHNode lol = openSet.back();
 	lol.printState();
-	bool found = false;
 
-	while(!found && openSet.size() != 0)
+	while(openSet.size() != 0)
 	{
 		RHNode current = openSet.back();
 		openSet.pop_back();
 		closedSet.push_back(current);
 
-		current.printState();
 		if(current.isSolution())
 		{
 			backTracePath(results, start, current);
@@ -41,7 +40,7 @@ void AStar::search(RHNode &start, std::vector<RHNode> &results)
 		}
 
 		current.expand();
-		printf(current.kids.size()+"");
+		current.printMap();
 		for(unsigned int i = 0; i < current.kids.size(); i++)
 		{	
 			int t_g = current.g + 1;
@@ -59,9 +58,13 @@ void AStar::search(RHNode &start, std::vector<RHNode> &results)
 				if(contains(closedSet, current.kids[i]) != -1)
 					remove(closedSet, current.kids[i]);
 				
+				current.kids[i].parent = &current;
 				current.kids[i].calculateValues();
 				if(contains(openSet, current.kids[i]) == -1)
+				{
 					openSet.push_back(current.kids[i]);
+					std::sort(openSet.begin(), openSet.end());
+				}
 
 			}
 		}
