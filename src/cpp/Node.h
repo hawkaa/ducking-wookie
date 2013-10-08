@@ -15,7 +15,7 @@ public:
 	virtual void calculateValues();
 	virtual bool isSolution();
 
-	virtual bool operator ==(Node& other);
+	virtual bool operator==(const Node& other)const{return true;};
 
 	bool isOpen();
 
