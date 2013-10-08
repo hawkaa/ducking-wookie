@@ -22,6 +22,7 @@ bool isOccupiedByState(gamestate &state, int x, int y);
 bool occupies(vehicle &vehicle, int x, int y);
 bool equals(gamestate& state1, gamestate& state2);
 
+
 class RHNode
 {
 public:
@@ -47,8 +48,8 @@ public:
 	void printMap();
 	RHNode* parent;
 	std::vector<RHNode> kids;
+	gamestate state;
 
 private:
-	gamestate state;
 };
 

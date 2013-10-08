@@ -40,7 +40,7 @@ void initTest4(gamestate& start){
 int main(int argc, char** argv)
 {
 	AStar search;
-	std::vector<RHNode> results;
+	std::vector<RHNode*> results;
 
 	gamestate start1;
 	initTest1(start1);
@@ -48,7 +48,14 @@ int main(int argc, char** argv)
 	RHNode startNode1(start1);
 	search.search(startNode1, results);
 
-	printf("Success!");
-	
+	printf("\nSuccess!\n");
+	printf("\nSolution found with: \n");
+	printf("%i moves", results.size());
+	printf("Solution:\n");
+
+	for(int i = 0; i < results.size(); ++i)
+	{
+		results.at(i)->printMap();
+	}
 }
 

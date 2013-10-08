@@ -13,24 +13,20 @@ AStar::~AStar(void)
 
 }
 
-void AStar::search(RHNode &start, std::vector<RHNode> &results)
+void AStar::search(RHNode &start, std::vector<RHNode*> &results)
 {
-	std::vector<RHNode> closedSet;
-	std::vector<RHNode> openSet;
+	std::deque<RHNode> closedSet;
+	std::deque<RHNode> openSet;
 
 	start.g = 0;
 	start.f = start.g + start.calculateHeuristic();
 
-	printf("Heuristic: %f", start.calculateHeuristic());
-
-	openSet.push_back(start);
-	RHNode lol = openSet.back();
-	lol.printState();
-
+	openSet.push_front(start);
+	
 	while(openSet.size() != 0)
 	{
-		RHNode current = openSet.back();
-		openSet.pop_back();
+		RHNode current = openSet.front();
+		openSet.pop_front();
 		closedSet.push_back(current);
 
 		if(current.isSolution())
@@ -40,9 +36,11 @@ void AStar::search(RHNode &start, std::vector<RHNode> &results)
 		}
 
 		current.expand();
-		current.printMap();
+		//current.printMap();
 		for(unsigned int i = 0; i < current.kids.size(); i++)
 		{	
+			current.kids[i].parent = new RHNode();
+			memcpy(current.kids[i].parent, &current, sizeof(RHNode));
 			int t_g = current.g + 1;
 			int t_f = t_g + current.kids[i].calculateHeuristic();
 			
@@ -58,43 +56,60 @@ void AStar::search(RHNode &start, std::vector<RHNode> &results)
 				if(contains(closedSet, current.kids[i]) != -1)
 					remove(closedSet, current.kids[i]);
 				
-				current.kids[i].parent = &current;
 				current.kids[i].calculateValues();
 				if(contains(openSet, current.kids[i]) == -1)
 				{
 					openSet.push_back(current.kids[i]);
 					std::sort(openSet.begin(), openSet.end());
 				}
-
 			}
 		}
 	}
 }
 
-void AStar::backTracePath(std::vector<RHNode> &results, RHNode &start, RHNode &end)
+void AStar::backTracePath(std::vector<RHNode*> &results, RHNode& start, RHNode& end)
 {
-	RHNode prev, cur;
-	cur = end;
-	while(!(start == cur))
+	RHNode* cur = &end;
+	RHNode* other = &end;
+	int i = 0;
+	while(cur->parent != nullptr)
+	{	
+		++i;
+		cur = other;
+		//results.push_back(*cur);
+		other = cur->parent;
+	}
+
+	RHNode** references = new RHNode*[i];
+
+	cur = &end;
+	other = &end;
+	for(int j = i-1; j > 0; --j)
 	{
-		cur = *prev.parent;
-		results.push_back(cur);
-		prev = cur;
+		cur = other;
+		references[j] = cur;
+		other = cur->parent;
+	}
+	RHNode* hey = references[i-1];
+
+	for(int k = 0; k < i; ++k)
+	{
+		results.push_back(references[k]);
 	}
 }
 
-int contains(std::vector<RHNode> &vec, RHNode &element)
+int contains(std::deque<RHNode> &vec, RHNode &element)
 {
-	std::vector<RHNode>::iterator it = std::find(vec.begin(), vec.end(), element);	
+	std::deque<RHNode>::iterator it = std::find(vec.begin(), vec.end(), element);	
 	if(it == vec.end())
 		return -1;
 	return it - vec.begin();
 }
 
 
-bool remove(std::vector<RHNode> &vec, RHNode &element)
+bool remove(std::deque<RHNode> &vec, RHNode &element)
 {
-	std::vector<RHNode>::iterator it = std::find(vec.begin(), vec.end(), element);
+	std::deque<RHNode>::iterator it = std::find(vec.begin(), vec.end(), element);
 	if(it == vec.end())
 		return true;
 	vec.erase(it);

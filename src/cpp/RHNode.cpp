@@ -97,7 +97,6 @@ bool equals(gamestate& state1, gamestate& state2)
 RHNode::RHNode(gamestate state)
 {
 	this->state = state;
-
 	std::vector<vehicle>::iterator it;
 	for(int i = 0; i < 6; i++)
 	{
@@ -170,7 +169,7 @@ void RHNode::calculateValues()
 	f = g + this->calculateHeuristic();
 }
 
-bool RHNode::isSolution()
+bool RHNode::isSolution() 
 {
 	if(state.vehicles[0].data[1] == 4)
 		return true;
@@ -179,7 +178,7 @@ bool RHNode::isSolution()
 
 gamestate RHNode::getState() const
 {
-	return state;	
+	return this->state;	
 }
 
 void RHNode::printState()
