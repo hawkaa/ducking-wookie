@@ -48,7 +48,7 @@ public class ECPState extends SimulatedAnnealingState {
 	
 	@Override
 	public ArrayList<SimulatedAnnealingState> getNeighbours() {
-		return getNeighbours2();
+		return getNeighbours1();
 	}
 
 	
@@ -254,7 +254,6 @@ public class ECPState extends SimulatedAnnealingState {
 
 	int getMaxScore2() {
 		int iMaxPieces = rows < columns? rows*eggs: columns*eggs;
-		System.out.println(iMaxPieces);
 		int size = rows*columns;
 		int empty = size-iMaxPieces;
 		return iMaxPieces*3 + empty*1;

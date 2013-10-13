@@ -16,9 +16,10 @@ public class Main {
 	
 	
 	public static SimulatedAnnealingState simulatedAnnealing(SimulatedAnnealingState p) {
-		double fpmax, q, plim, x;
+		double fpmax, q, plim, x, randomNeighbourScore,delta, prob;
 		SimulatedAnnealingState pmax = null;
-		double temp = 100.0;
+		SimulatedAnnealingState randomNeighbour = null;
+		double temp = 30.0;
 		double target = 1.0;
 		ArrayList<SimulatedAnnealingState> neighbours;
 		
@@ -34,8 +35,8 @@ public class Main {
 			neighbours = p.getNeighbours();
 			Collections.shuffle(neighbours);
 			
-			fpmax = fp;
-			pmax = p;
+			fpmax = 0.0;
+			pmax = null;
 			for(SimulatedAnnealingState neighbour: neighbours) {
 				
 				if(neighbour.objectiveFunction()>= fpmax) {
@@ -43,14 +44,31 @@ public class Main {
 					pmax = neighbour;
 				}
 			}
-			System.out.println("[" + temp + "] Climbs from " + fp + " to " + fpmax + ".");
-			p = pmax;
-			fp = fpmax;
+			if(fpmax > fp) {
+				System.out.println("Found a better match! Will keep on iterating (" + fp +" to " + fpmax + ")");
+				p = pmax;
+				fp = fpmax;
+			} else if (fpmax == fp) {
+				p = pmax;
+				fp = fpmax;
+			} else {
+				randomNeighbour = neighbours.get(0);
+				randomNeighbourScore = randomNeighbour.objectiveFunction();
+				delta = (fp-randomNeighbourScore);
+				
+
+				prob = Math.pow(Math.E, -delta/temp);
+				if(prob > Math.random()) {
+					System.out.println("Using new neighbour (" + fp + " to " + randomNeighbourScore + "), won with probability " + prob + ";");
+					p = randomNeighbour;
+					fp = randomNeighbourScore;
+				}
+			}
 			
-			temp -= 0.001;
+			temp -= 0.0002;
 		}
-		System.out.println(pmax.objectiveFunction());
-		return pmax;
+		System.out.println(p.objectiveFunction());
+		return p;
 	}
 	
 
