@@ -30,7 +30,10 @@ public class ECPState extends SimulatedAnnealingState {
 		this.rnd = new Random();
 		
 	}
-	
+	/**
+	 * Prints board representation
+	 * @return String Board represesntation
+	 */
 	public String printState() {
 		String s = "";
 		for(int m =0; m< this.rows; ++m) {
@@ -46,13 +49,19 @@ public class ECPState extends SimulatedAnnealingState {
 	}
 
 	
+	/**
+	 * Returns neighbours
+	 */
 	@Override
 	public ArrayList<SimulatedAnnealingState> getNeighbours() {
 		return getNeighbours1();
 	}
 
 	
-	
+	/**
+	 * Described in the report
+	 * @return
+	 */
 	ArrayList<SimulatedAnnealingState> getNeighbours1() {
 		ArrayList<SimulatedAnnealingState> l = new ArrayList<SimulatedAnnealingState>();
 
@@ -79,7 +88,10 @@ public class ECPState extends SimulatedAnnealingState {
 		
 		return l;
 	}
-	
+	/**
+	 * Described in the report
+	 * @return
+	 */
 	ArrayList<SimulatedAnnealingState> getNeighbours2() {
 		ArrayList<SimulatedAnnealingState> l = new ArrayList<SimulatedAnnealingState>();
 		for(int i = 0; i < 10; ++i) {
@@ -95,12 +107,17 @@ public class ECPState extends SimulatedAnnealingState {
 		return l;
 	}
 	
-
+	/**
+	 * Returns the current score of the state
+	 */
 	@Override
 	public double objectiveFunction() {
 		return objectiveFunction2();
 	}
-	
+	/**
+	 * Described in the report
+	 * @return
+	 */
 	double objectiveFunction1() {
 		return (double)this.getPoints1()/this.getMaxScore1();
 	}
@@ -113,7 +130,9 @@ public class ECPState extends SimulatedAnnealingState {
 			}
 		}
 	}
-	
+	/**
+	 * For uniqueness checking
+	 */
 	@Override
 	public int hashCode() {
 		return 0;
@@ -158,6 +177,9 @@ public class ECPState extends SimulatedAnnealingState {
 		return rows < columns? rows*eggs: columns*eggs;
 	}
 	
+	/**
+	 * Clones the current state
+	 */
 	protected ECPState clone() {
 		ECPState s = new ECPState(this.rows, this.columns, this.eggs);
 		for(int m =0; m< this.rows; ++m) {
