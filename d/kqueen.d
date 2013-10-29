@@ -2,8 +2,9 @@ import std.stdio;
 import std.random;
 import std.math;
 import std.array;
+import std.datetime;
 
-immutable int size = 8;
+immutable int size = 1000;
 
 bool[size][size] kqueens;
 /*
@@ -12,12 +13,23 @@ bool[size][size] kqueens;
 void main() {
     // Generate board
     genBoard();
+
+    // Starting timer
+    auto start = Clock.currTime();
+
     // Perform local-search
     ls();
     
+    // Stopping timer
+    auto stop = Clock.currTime();
+
+
+
     // Printing result
-    writeln("Board done? ", isDone());
     printBoard();
+    writeln("Time elapsed: ", stop-start);
+    writeln("Board done? ", isDone());
+
 }
 
 /*
@@ -26,6 +38,7 @@ void main() {
 void ls() {
     // Declaring variables
     int row, min_value;
+    ulong rnd_pick;
     int[] min_indexes;
     int[size] conflicts;
 
@@ -59,7 +72,10 @@ void ls() {
             }
         }
         // Picking random of minimum indexes and setting this row
-        setRow(row, min_indexes[uniform(0, min_indexes.length)]);
+        rnd_pick = uniform(0, min_indexes.length);
+        if(!kqueens[row][min_indexes[rnd_pick]]){
+            setRow(row, min_indexes[rnd_pick]);
+        }
         // Clearing min_indexes array so its ready for next round
         clear(min_indexes);
 
