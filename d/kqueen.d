@@ -3,69 +3,95 @@ import std.random;
 import std.math;
 import std.array;
 
-immutable int size = 100;
+immutable int size = 8;
 
 bool[size][size] kqueens;
-
+/*
+ * Main algorithm
+ */
 void main() {
+    // Generate board
     genBoard();
-    //printBoard();
-    //writeln(getConflictsRow(0));
-    //writeln(getConflictsRow(2));
-    //ls();
-    setRow(0,0);
-    setRow(1,1);
+    // Perform local-search
     ls();
-    //printBoard();
-    writeln(isDone());
+    
+    // Printing result
+    writeln("Board done? ", isDone());
+    printBoard();
 }
 
+/*
+ * The Local Search algorithm
+ */
 void ls() {
+    // Declaring variables
     int row, min_value;
     int[] min_indexes;
     int[size] conflicts;
-    for(int i=0; i<100000; ++i) {
+
+    // Will randomly pick 1000000 rows before exit
+    for(int i=0; i<10000000; ++i) {
+        
+        // Checking board status every 100 iteration
+        if(i%100 == 0) {
+            if(isDone()) {
+                return;
+            }
+        }
+        
+        // Finding random row
         row = randInt();
+
+        // Generating conflicts row
         conflicts = getConflictsRow(row);
-        //writeln("Conflicts on row ", row, ": ", conflicts);
         min_value = conflicts[0];
+
+        // Iterating through conflicts row
         for(int j=0; j<size; ++j) {
+            // If we found an index with a smaller value than previously saved, clear the min_indexes array and 
             if(conflicts[j] < min_value) {
                 clear(min_indexes);
                 min_value = conflicts[j];
             }
+            // If we found an equal value to the minimum value, add it to the min_indexes array
             if(conflicts[j] == min_value) {
                 min_indexes ~= j;
             }
         }
-       // writeln(min_indexes);
+        // Picking random of minimum indexes and setting this row
         setRow(row, min_indexes[uniform(0, min_indexes.length)]);
+        // Clearing min_indexes array so its ready for next round
         clear(min_indexes);
-            
-
-        //printBoard();
 
     }
 }
-
+/*
+ * Setting a row to have a queen at a certain value
+ */
 void setRow(int row, int column) {
     for(int i=0; i<size;++i) {
         kqueens[row][i] = i==column;
     }
 }
 
-
+/*
+ * Returns random int based on board size
+ */
 int randInt() {
     return uniform(0, size);
 }
-
+/*
+ * Generates random board. Iterates through all rows and adds a queen at random position
+ */
 void genBoard() {
     for(int i=0; i<size; ++i) {
         kqueens[i][randInt()] = true;
     }
 }
 
-
+/*
+ * Prints the board
+ */
 void printBoard(){
     string str = "";
     for(int i=0; i<size; ++i) {
@@ -79,6 +105,9 @@ void printBoard(){
     writeln(str);
 }
 
+/*
+ * Returns an array (with board size) with the number of conflicts on each column at the given row.
+ */
 int[size] getConflictsRow(int row) {
     int[size] res;
     for(int i=0; i<size;++i) {
@@ -87,14 +116,20 @@ int[size] getConflictsRow(int row) {
     return res;
 }
 
+/*
+ * Returns the number of conflicts at a position
+ */
 int getConflicts(int row, int column) {
     int conflicts = 0;
     int delta;
     for(int i=0;i<size;i++) {
+        // Skip current row
         if(i==row) {
             continue;
         }
         delta = abs(i-row);
+
+        // Bounds check
         if(column-delta >=0) {
             conflicts += kqueens[i][column-delta]?1:0;
         }
@@ -105,11 +140,15 @@ int getConflicts(int row, int column) {
     }
     return conflicts;
 }
-
+/*
+ * Checks if board is done.
+ * These methods are more efficient than the integer versions, as these return immideatly upon conflict
+ */
 bool isDone() {
     for(int i=0; i<size; ++i) {
         for(int j=0; j<size; ++j) {
             if(hasConflict(i,j)) { 
+                // Writing output to see status
                 writeln("CONFLICT AT ", i,"x",j);
                 return false; 
             }
@@ -117,7 +156,10 @@ bool isDone() {
     }
     return true;
 }
-
+/*
+ * Checks if a position has a conflict.
+ * These methods are more efficient than the integer versions, as these return immideatly upon conflict.
+ */
 bool hasConflict(int row, int column) {
     int delta;
     if(!kqueens[row][column]) {return false;}
