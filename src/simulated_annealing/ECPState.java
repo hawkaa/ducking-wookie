@@ -84,8 +84,7 @@ public class ECPState extends SimulatedAnnealingState {
 			ecps.put(eggPositions.get(i).row, eggPositions.get(i).column, false);
 			l.add(ecps);
 		}
-		
-		
+
 		return l;
 	}
 	/**
@@ -118,9 +117,9 @@ public class ECPState extends SimulatedAnnealingState {
 	 * Described in the report
 	 * @return
 	 */
-	double objectiveFunction1() {
-		return (double)this.getPoints1()/this.getMaxScore1();
-	}
+double objectiveFunction1() {
+	return (double)this.getPoints1()/this.getMaxScore1();
+}
 
 	@Override
 	protected void randomize() {

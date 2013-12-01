@@ -4,7 +4,7 @@ import std.math;
 import std.array;
 import std.datetime;
 
-immutable int size = 1000;
+immutable int size = 100;
 
 bool[size][size] kqueens;
 /*
@@ -38,7 +38,7 @@ void main() {
 void ls() {
     // Declaring variables
     int row, min_value;
-    ulong rnd_pick;
+    uint rnd_pick;
     int[] min_indexes;
     int[size] conflicts;
 
